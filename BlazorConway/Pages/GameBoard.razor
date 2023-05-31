@@ -1,0 +1,26 @@
+﻿@page "/gameboard/{height:int}/{width:int}"
+
+<h3>GameBoard</h3>
+
+<p>Display game board with height @Height and width @Width. </p>
+
+<div class="game-board-container">
+	@for (int row = 0; row < Height; row++)
+	{
+		<div class="game-board-row">
+			@for (int col = 0; col < Width; col++)
+			{
+				<button class="cell-button">@($"{row + 1}, {col + 1}")</button>
+			}
+		</div>
+	}
+</div>
+
+
+@code {
+	[Parameter]
+	public int Height { get; set; }
+
+	[Parameter]
+	public int Width { get; set; }
+}
