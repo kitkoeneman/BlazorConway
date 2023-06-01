@@ -4,13 +4,29 @@
 
 <p>Display game board with height @Height and width @Width. </p>
 
+<style>
+	.game-board-container {
+		display: grid;
+		grid-column-gap: 0;
+		grid-row-gap: -5px;
+	}
+	.game-board-row {
+		/* TODO remove space between rows*/
+	}
+	.cell-button {
+		height: 24px;
+		width: 24px;
+		border-width: 1px;
+	}
+</style>
+
 <div class="game-board-container">
 	@for (int row = 0; row < Height; row++)
 	{
 		<div class="game-board-row">
 			@for (int col = 0; col < Width; col++)
 			{
-				<button class="cell-button">@($"{row + 1}, {col + 1}")</button>
+				<button class="cell-button">X</button>
 			}
 		</div>
 	}
