@@ -24,7 +24,7 @@
 <div class="grid">
 	@foreach (var cell in CellGrid)
 	{
-		<button class="cell-button-dead" @onclick="cell.ClickCell">X</button>
+		<button class="@cell.CellStyle" @onclick="cell.ClickCell">X</button>
 		if (cell.Column == Width - 1)
 		{
 			<div></div>
@@ -40,7 +40,6 @@
 
 	[Parameter]
 	public int Width { get; set; }
-
 
 	private Cell[,] CellGrid;
 
@@ -61,7 +60,7 @@
 	}
 	/*	
 	private void ToggleState(int row, int col)
-	{
+		{
 		Console.WriteLine("Toggle " + row + " " + col);
 		GameBoardStates[row, col] = !GameBoardStates[row, col];
 
@@ -74,17 +73,34 @@
 		public int Row { get; }
 		public int Column { get; }
 		public bool IsAlive { get; set; }
+		public string CellStyle { get; set; }
 
 		public Cell(int row, int column) {
 			Row = row;
 			Column = column;
 			IsAlive = false;
+			CellStyle = "cell-button-dead";
 		}
 
 		public void ClickCell()
 		{
 			Console.WriteLine("Cell clicked at " + Row + ", " + Column + " (" + this.IsAlive + ")");
-			this.IsAlive = !this.IsAlive;
+				/*
+				* TODO implement CellStyle as a LinkedList with two string items.  
+				* Have each item point at the other, so you can do something like:
+				*		IsAlive = !IsAlive;
+				*      CellStyle = CellStyleChoices.next
+				*/
+			if (IsAlive)
+			{
+				IsAlive = false;
+				CellStyle = "cell-button-dead";
+			}
+			else
+			{
+				IsAlive = true;
+				CellStyle = "cell-button-alive";
+			}
 			Console.WriteLine("Cell is now " + this.IsAlive);
 		}
 	}
