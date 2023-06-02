@@ -7,31 +7,49 @@
 <style>
 	.game-board-container {
 		display: grid;
-		grid-column-gap: 0;
-		grid-row-gap: -5px;
+		grid-template-columns: @Width;
 	}
 	.game-board-row {
 		/* TODO remove space between rows*/
 	}
-	.cell-button {
+	.cell-button-dead {
 		height: 24px;
 		width: 24px;
-		border-width: 1px;
+		background-color: white;
+	}
+	.cell-button-alive {
+		height: 24px;
+		width: 24px;
+		background-color: green;
 	}
 </style>
 
+<div class="grid">
+	@foreach (var cell in CellGrid)
+	{
+		<button class="cell-button-dead" @onclick="cell.ClickCell">X</button>
+		if (cell.Column == Width - 1)
+		{
+			<div></div>
+		}
+	}
+</div>
+
+<!--
 <div class="game-board-container">
 	@for (int row = 0; row < Height; row++)
 	{
+		var local_row = row;
 		<div class="game-board-row">
 			@for (int col = 0; col < Width; col++)
 			{
-				<button class="cell-button">X</button>
+				var local_col = col;
+				<button @onclick="cell.ClickCell">X</button>
 			}
 		</div>
 	}
 </div>
-
+-->
 
 @code {
 	[Parameter]
@@ -39,4 +57,57 @@
 
 	[Parameter]
 	public int Width { get; set; }
+
+	private bool[,] GameBoardStates;
+
+	private Cell[,] CellGrid;
+
+	public string ButtonClass = "cell-button-dead";
+
+	protected override void OnInitialized()
+	{
+		GameBoardStates = new bool[Height, Width];
+
+		CellGrid = new Cell[Height, Width];
+
+		for ( int row = 0; row < Height; row++)
+		{
+			for (int column = 0; column < Width; column++)
+			{
+				var cell = new Cell(row, column);
+				CellGrid[row, column] = cell;
+			}
+		}
+	}
+
+	private void ToggleState(int row, int col)
+	{
+		Console.WriteLine("Toggle " + row + " " + col);
+		GameBoardStates[row, col] = !GameBoardStates[row, col];
+
+		ButtonClass = "cell-button-alive";
+	}
+
+	private string GetGameBoardStates(int row, int col)
+	{
+		return GameBoardStates[row, col] ? "grid-button-active" : "grid-button";
+	}
+
+	public class Cell
+	{
+		public int Row { get; }
+		public int Column { get; }
+		public bool IsAlive { get; set; }
+
+		public Cell(int row, int column) {
+			Row = row;
+			Column = column;
+			IsAlive = false;
+		}
+
+		public void ClickCell()
+		{
+			Console.WriteLine("Cell clicked at " + Row + ", " + Column);
+		}
+	}
 }
