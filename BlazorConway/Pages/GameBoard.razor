@@ -9,9 +9,6 @@
 		display: grid;
 		grid-template-columns: @Width;
 	}
-	.game-board-row {
-		/* TODO remove space between rows*/
-	}
 	.cell-button-dead {
 		height: 24px;
 		width: 24px;
@@ -35,21 +32,7 @@
 	}
 </div>
 
-<!--
-<div class="game-board-container">
-	@for (int row = 0; row < Height; row++)
-	{
-		var local_row = row;
-		<div class="game-board-row">
-			@for (int col = 0; col < Width; col++)
-			{
-				var local_col = col;
-				<button @onclick="cell.ClickCell">X</button>
-			}
-		</div>
-	}
-</div>
--->
+
 
 @code {
 	[Parameter]
@@ -58,7 +41,6 @@
 	[Parameter]
 	public int Width { get; set; }
 
-	private bool[,] GameBoardStates;
 
 	private Cell[,] CellGrid;
 
@@ -66,8 +48,6 @@
 
 	protected override void OnInitialized()
 	{
-		GameBoardStates = new bool[Height, Width];
-
 		CellGrid = new Cell[Height, Width];
 
 		for ( int row = 0; row < Height; row++)
@@ -79,7 +59,7 @@
 			}
 		}
 	}
-
+	/*	
 	private void ToggleState(int row, int col)
 	{
 		Console.WriteLine("Toggle " + row + " " + col);
@@ -87,11 +67,7 @@
 
 		ButtonClass = "cell-button-alive";
 	}
-
-	private string GetGameBoardStates(int row, int col)
-	{
-		return GameBoardStates[row, col] ? "grid-button-active" : "grid-button";
-	}
+	*/
 
 	public class Cell
 	{
@@ -107,7 +83,9 @@
 
 		public void ClickCell()
 		{
-			Console.WriteLine("Cell clicked at " + Row + ", " + Column);
+			Console.WriteLine("Cell clicked at " + Row + ", " + Column + " (" + this.IsAlive + ")");
+			this.IsAlive = !this.IsAlive;
+			Console.WriteLine("Cell is now " + this.IsAlive);
 		}
 	}
 }
