@@ -21,18 +21,22 @@
 	}
 </style>
 
+<!-- 
+TODO:
+ remove spacing between cells
+ reduce cell border thickness
+ when dimensions are larger than screen, maintain grid by resizing cells or allow side scrolling
+-->
 <div class="grid">
 	@foreach (var cell in CellGrid)
 	{
-		<button class="@cell.CellStyle" @onclick="cell.ClickCell">X</button>
+		<button class="@cell.CellStyle" @onclick="cell.ClickCell"></button>
 		if (cell.Column == Width - 1)
 		{
 			<div></div>
 		}
 	}
 </div>
-
-
 
 @code {
 	[Parameter]
@@ -42,8 +46,6 @@
 	public int Width { get; set; }
 
 	private Cell[,] CellGrid;
-
-	public string ButtonClass = "cell-button-dead";
 
 	protected override void OnInitialized()
 	{
@@ -58,15 +60,6 @@
 			}
 		}
 	}
-	/*	
-	private void ToggleState(int row, int col)
-		{
-		Console.WriteLine("Toggle " + row + " " + col);
-		GameBoardStates[row, col] = !GameBoardStates[row, col];
-
-		ButtonClass = "cell-button-alive";
-	}
-	*/
 
 	public class Cell
 	{
@@ -88,8 +81,9 @@
 				/*
 				* TODO implement CellStyle as a LinkedList with two string items.  
 				* Have each item point at the other, so you can do something like:
-				*		IsAlive = !IsAlive;
-				*      CellStyle = CellStyleChoices.next
+				*	IsAlive = !IsAlive;
+				*   CellStyle = CellStyleChoices.next
+				* (instead of if/else statement) 
 				*/
 			if (IsAlive)
 			{
