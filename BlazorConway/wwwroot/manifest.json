@@ -1,6 +1,6 @@
 {
-  "name": "BlazorConway",
-  "short_name": "BlazorConway",
+  "name": "Kit's Conway",
+  "short_name": "Conway",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#ffffff",

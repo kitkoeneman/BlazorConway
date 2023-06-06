@@ -1,0 +1,101 @@
+﻿@page "/gameboard/{height:int}/{width:int}"
+
+<h3>GameBoard</h3>
+
+<p>Display game board with height @Height and width @Width. </p>
+
+<style>
+	.game-board-container {
+		display: grid;
+		grid-template-columns: @Width;
+	}
+	.cell-button-dead {
+		height: 24px;
+		width: 24px;
+		background-color: white;
+	}
+	.cell-button-alive {
+		height: 24px;
+		width: 24px;
+		background-color: green;
+	}
+</style>
+
+<!-- 
+TODO:
+ remove spacing between cells
+ reduce cell border thickness
+ when dimensions are larger than screen, maintain grid by resizing cells or allow side scrolling
+-->
+<div class="grid">
+	@foreach (var cell in CellGrid)
+	{
+		<button class="@cell.CellStyle" @onclick="cell.ClickCell"></button>
+		if (cell.Column == Width - 1)
+		{
+			<div></div>
+		}
+	}
+</div>
+
+@code {
+	[Parameter]
+	public int Height { get; set; }
+
+	[Parameter]
+	public int Width { get; set; }
+
+	private Cell[,] CellGrid;
+
+	protected override void OnInitialized()
+	{
+		CellGrid = new Cell[Height, Width];
+
+		for ( int row = 0; row < Height; row++)
+		{
+			for (int column = 0; column < Width; column++)
+			{
+				var cell = new Cell(row, column);
+				CellGrid[row, column] = cell;
+			}
+		}
+	}
+
+	public class Cell
+	{
+		public int Row { get; }
+		public int Column { get; }
+		public bool IsAlive { get; set; }
+		public string CellStyle { get; set; }
+
+		public Cell(int row, int column) {
+			Row = row;
+			Column = column;
+			IsAlive = false;
+			CellStyle = "cell-button-dead";
+		}
+
+		public void ClickCell()
+		{
+			Console.WriteLine("Cell clicked at " + Row + ", " + Column + " (" + this.IsAlive + ")");
+				/*
+				* TODO implement CellStyle as a LinkedList with two string items.  
+				* Have each item point at the other, so you can do something like:
+				*	IsAlive = !IsAlive;
+				*   CellStyle = CellStyleChoices.next
+				* (instead of if/else statement) 
+				*/
+			if (IsAlive)
+			{
+				IsAlive = false;
+				CellStyle = "cell-button-dead";
+			}
+			else
+			{
+				IsAlive = true;
+				CellStyle = "cell-button-alive";
+			}
+			Console.WriteLine("Cell is now " + this.IsAlive);
+		}
+	}
+}

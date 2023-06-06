@@ -1,0 +1,26 @@
+﻿@page "/parameters"
+
+<h3>Parameters</h3>
+
+<!-- 
+TODO 
+ allow submission using return/enter key (not just click) 
+ enforce 10-100 dimensions limits
+-->
+<input type="number" placeholder="Height (10-100)" @bind="@Height" />
+<input type="number" placeholder="Width (10-100)" @bind="@Width" />
+<button @onclick="NavigateToGameBoardPage">Create board</button>
+
+@code {
+
+	[Inject]
+	public NavigationManager NavigationManager { get; set; }
+
+	private int Height { get; set; }
+	private int Width { get; set; }
+
+	private void NavigateToGameBoardPage()
+	{
+		NavigationManager.NavigateTo($"/gameboard/{Height}/{Width}");
+	}
+}
