@@ -1,4 +1,5 @@
 ﻿@page "/gameboard/{height:int}/{width:int}"
+@using System.Timers;
 
 <h3>GameBoard</h3>
 
@@ -27,6 +28,10 @@ TODO:
  reduce cell border thickness
  when dimensions are larger than screen, maintain grid by resizing cells or allow side scrolling
 -->
+
+<button @onclick="StartGame">Start game...</button>
+<button @onclick="NextGenSimple">Next Gen</button>
+
 <div class="grid">
 	@foreach (var cell in CellGrid)
 	{
@@ -47,6 +52,8 @@ TODO:
 
 	private Cell[,] CellGrid;
 
+	public Timer timer;
+
 	protected override void OnInitialized()
 	{
 		CellGrid = new Cell[Height, Width];
@@ -59,6 +66,12 @@ TODO:
 				CellGrid[row, column] = cell;
 			}
 		}
+
+		timer = new Timer();
+		timer.Interval = 1000;
+		timer.Elapsed += NextGen;
+		timer.AutoReset = true;
+		timer.Enabled = false;
 	}
 
 	public class Cell
@@ -78,13 +91,13 @@ TODO:
 		public void ClickCell()
 		{
 			Console.WriteLine("Cell clicked at " + Row + ", " + Column + " (" + this.IsAlive + ")");
-				/*
-				* TODO implement CellStyle as a LinkedList with two string items.  
-				* Have each item point at the other, so you can do something like:
-				*	IsAlive = !IsAlive;
-				*   CellStyle = CellStyleChoices.next
-				* (instead of if/else statement) 
-				*/
+			/*
+			* TODO implement CellStyle as a LinkedList with two string items.  
+			* Have each item point at the other, so you can do something like:
+			*	IsAlive = !IsAlive;
+			*   CellStyle = CellStyleChoices.next
+			* (instead of if/else statement) 
+			*/
 			if (IsAlive)
 			{
 				IsAlive = false;
@@ -96,6 +109,56 @@ TODO:
 				CellStyle = "cell-button-alive";
 			}
 			Console.WriteLine("Cell is now " + this.IsAlive);
+		}
+	}
+
+	public void StartGame()
+	{
+		Console.WriteLine("Starting game");
+
+		timer.Enabled = true;
+
+	}
+
+	public void NextGen(Object source, ElapsedEventArgs e)
+	{
+		Console.WriteLine("Enter NextGen");
+
+		NextGenSimple();
+
+		/*
+		for (int row = 0; row < Height; row++)
+		{
+			for (int col = 0; col < Width; col++)
+			{
+				if (CellGrid[row, col].CellStyle.Equals("cell-button-dead"))
+				{
+					CellGrid[row, col].CellStyle = "cell-button-alive";
+				}
+				else
+				{
+					CellGrid[row, col].CellStyle = "cell-button-dead";
+				}
+			}
+		}
+		*/
+	}
+
+	public void NextGenSimple()
+	{
+		for (int row = 0; row < Height; row++)
+		{
+			for (int col = 0; col < Width; col++)
+			{
+				if (CellGrid[row, col].CellStyle.Equals("cell-button-dead"))
+				{
+					CellGrid[row, col].CellStyle = "cell-button-alive";
+				}
+				else
+				{
+					CellGrid[row, col].CellStyle = "cell-button-dead";
+				}
+			}
 		}
 	}
 }
