@@ -29,6 +29,10 @@ TODO:
 -->
 
 <button @onclick="DoNextGeneration">Next Generation</button>
+<button @onclick="CalculateNextGeneration">Calculate</button>
+<button @onclick="RenderNextGeneration">Render</button>
+<button @onclick="ClearBoard">Clear Board</button>
+<button @onclick="PrintStatus">Print Status</button>
 
 <div class="grid">
 	@foreach (var cell in CellGrid)
@@ -203,7 +207,7 @@ TODO:
 		}
 	}
 
-	public void RenderNextGeneraration()
+	public void RenderNextGeneration()
 	{
 		for (int row = 0; row < Height; row++)
 		{
@@ -212,10 +216,12 @@ TODO:
 				if (CellGrid[row, col].NextGenerationIsAlive)
 				{
 					CellGrid[row, col].CellStyle = "cell-button-alive";
+					CellGrid[row, col].IsAlive = true;
 				}
 				else
 				{
 					CellGrid[row, col].CellStyle = "cell-button-dead";
+					CellGrid[row, col].IsAlive = false;
 				}
 			}
 		}
@@ -224,6 +230,31 @@ TODO:
 	public void DoNextGeneration()
 	{
 		CalculateNextGeneration();
-		RenderNextGeneraration();
+		RenderNextGeneration();
+	}
+
+	public void PrintStatus()
+	{
+		Console.WriteLine("---------------------\n---------------------\n");
+		for (int row = 0; row < Height; row++)
+		{
+			for (int col = 0; col < Width; col++)
+			{
+				Console.WriteLine("Cell at " + row + ", " + col + " IsAlive: " + CellGrid[row, col].IsAlive + " NextGen: " + CellGrid[row, col].NextGenerationIsAlive);
+			}
+			Console.WriteLine("\n");
+		}
+	}
+
+	public void ClearBoard()
+	{
+		for (int row = 0; row < Height; row++)
+		{
+			for (int col = 0; col < Width; col++)
+			{
+				CellGrid[row, col].NextGenerationIsAlive = false;
+			}
+		}
+		RenderNextGeneration();
 	}
 }
