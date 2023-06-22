@@ -27,6 +27,13 @@ TODO:
  reduce cell border thickness
  when dimensions are larger than screen, maintain grid by resizing cells or allow side scrolling
 -->
+
+<button @onclick="DoNextGeneration">Next Generation</button>
+<button @onclick="CalculateNextGeneration">Calculate</button>
+<button @onclick="RenderNextGeneration">Render</button>
+<button @onclick="ClearBoard">Clear Board</button>
+<button @onclick="PrintStatus">Print Status</button>
+
 <div class="grid">
 	@foreach (var cell in CellGrid)
 	{
@@ -38,20 +45,20 @@ TODO:
 	}
 </div>
 
-@code {
+@code{
 	[Parameter]
 	public int Height { get; set; }
 
 	[Parameter]
 	public int Width { get; set; }
 
-	private Cell[,] CellGrid;
+	public static Cell[,] CellGrid;
 
 	protected override void OnInitialized()
 	{
 		CellGrid = new Cell[Height, Width];
 
-		for ( int row = 0; row < Height; row++)
+		for (int row = 0; row < Height; row++)
 		{
 			for (int column = 0; column < Width; column++)
 			{
@@ -67,8 +74,10 @@ TODO:
 		public int Column { get; }
 		public bool IsAlive { get; set; }
 		public string CellStyle { get; set; }
+		public bool NextGenerationIsAlive { get; set; }
 
-		public Cell(int row, int column) {
+		public Cell(int row, int column)
+		{
 			Row = row;
 			Column = column;
 			IsAlive = false;
@@ -77,14 +86,15 @@ TODO:
 
 		public void ClickCell()
 		{
-			Console.WriteLine("Cell clicked at " + Row + ", " + Column + " (" + this.IsAlive + ")");
-				/*
-				* TODO implement CellStyle as a LinkedList with two string items.  
-				* Have each item point at the other, so you can do something like:
-				*	IsAlive = !IsAlive;
-				*   CellStyle = CellStyleChoices.next
-				* (instead of if/else statement) 
-				*/
+			//int nays = GetNeighbours(Row, Column);
+			Console.WriteLine("Cell clicked at " + Row + ", " + Column + " with " + GetNeighbours(Row, Column) + " neighbours.");
+			/*
+			* TODO implement CellStyle as a LinkedList with two string items.  
+			* Have each item point at the other, so you can do something like:
+			*	IsAlive = !IsAlive;
+			*   CellStyle = CellStyleChoices.next
+			* (instead of if/else statement) 
+			*/
 			if (IsAlive)
 			{
 				IsAlive = false;
@@ -97,5 +107,154 @@ TODO:
 			}
 			Console.WriteLine("Cell is now " + this.IsAlive);
 		}
+
+		public static int GetNeighbours(int row, int col)
+		{
+			int Neighbours = 0;
+
+			try
+			{
+				if (CellGrid[row - 1, col - 1].IsAlive)
+				{
+					Neighbours++;
+				}
+			}
+			catch { }
+			try
+			{
+				if (CellGrid[row - 1, col].IsAlive)
+				{
+					Neighbours++;
+				}
+			}
+			catch { }
+			try
+			{
+				if (CellGrid[row - 1, col + 1].IsAlive)
+				{
+					Neighbours++;
+				}
+			}
+			catch { }
+			try
+			{
+				if (CellGrid[row, col - 1].IsAlive)
+				{
+					Neighbours++;
+				}
+			}
+			catch { }
+			try
+			{
+				if (CellGrid[row, col + 1].IsAlive)
+				{
+					Neighbours++;
+				}
+			}
+			catch { }
+			try
+			{
+				if (CellGrid[row + 1, col - 1].IsAlive)
+				{
+					Neighbours++;
+				}
+			}
+			catch { }
+			try
+			{
+				if (CellGrid[row + 1, col].IsAlive)
+				{
+					Neighbours++;
+				}
+			}
+			catch { }
+			try
+			{
+				if (CellGrid[row + 1, col + 1].IsAlive)
+				{
+					Neighbours++;
+				}
+			}
+			catch { }
+
+			return Neighbours;
+		}
+	}
+
+	public void CalculateNextGeneration()
+	{
+		for (int row = 0; row < Height; row++)
+		{
+			for (int col = 0; col < Width; col++)
+			{
+				if (Cell.GetNeighbours(row, col) < 2)
+				{
+					CellGrid[row, col].NextGenerationIsAlive = false;
+				}
+				else if (Cell.GetNeighbours(row, col) > 3)
+				{
+					CellGrid[row, col].NextGenerationIsAlive = false;
+				}
+				else if (!CellGrid[row, col].IsAlive && Cell.GetNeighbours(row, col) == 3)
+				{
+					CellGrid[row, col].NextGenerationIsAlive = true;
+				}
+				else if (CellGrid[row, col].IsAlive && (Cell.GetNeighbours(row, col) == 2 || Cell.GetNeighbours(row, col) == 3))
+				{
+					CellGrid[row, col].NextGenerationIsAlive = true;
+				}
+			}
+		}
+	}
+
+	public void RenderNextGeneration()
+	{
+		for (int row = 0; row < Height; row++)
+		{
+			for (int col = 0; col < Width; col++)
+			{
+				if (CellGrid[row, col].NextGenerationIsAlive)
+				{
+					CellGrid[row, col].CellStyle = "cell-button-alive";
+					CellGrid[row, col].IsAlive = true;
+				}
+				else
+				{
+					CellGrid[row, col].CellStyle = "cell-button-dead";
+					CellGrid[row, col].IsAlive = false;
+				}
+			}
+		}
+	}
+
+	public void DoNextGeneration()
+	{
+		CalculateNextGeneration();
+		RenderNextGeneration();
+	}
+
+	public void PrintStatus()
+	{
+		Console.WriteLine("---------------------\n---------------------\n");
+		for (int row = 0; row < Height; row++)
+		{
+			for (int col = 0; col < Width; col++)
+			{
+				Console.WriteLine("Cell at " + row + ", " + col + " IsAlive: " + CellGrid[row, col].IsAlive + " NextGen: " + CellGrid[row, col].NextGenerationIsAlive);
+			}
+			Console.WriteLine("\n");
+		}
+	}
+
+	public void ClearBoard()
+	{
+		for (int row = 0; row < Height; row++)
+		{
+			for (int col = 0; col < Width; col++)
+			{
+				CellGrid[row, col].NextGenerationIsAlive = false;
+			}
+		}
+		RenderNextGeneration();
 	}
 }
