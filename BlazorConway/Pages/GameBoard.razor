@@ -2,7 +2,7 @@
 
 <h3>GameBoard</h3>
 
-<p>Display game board with height @Height and width @Width. </p>
+<p>Select a cell to toggle it between alive and dead.</p>
 
 <style>
 	.game-board-container {
@@ -29,10 +29,12 @@ TODO:
 -->
 
 <button @onclick="DoNextGeneration">Next Generation</button>
+<!--
 <button @onclick="CalculateNextGeneration">Calculate</button>
 <button @onclick="RenderNextGeneration">Render</button>
-<button @onclick="ClearBoard">Clear Board</button>
 <button @onclick="PrintStatus">Print Status</button>
+-->
+<button @onclick="ClearBoard">Clear Board</button>
 
 <div class="grid">
 	@foreach (var cell in CellGrid)
